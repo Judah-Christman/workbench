@@ -39,7 +39,7 @@ export default function ClientList({
       <ul className='grid grid-cols-2 lg:grid-cols-6 gap-5'>
         {clients.map((client) => (
           <li className="text-white mx-auto" key={client.id}>
-            <Link href={`/dashboard/clients/${client.id}`}>
+            <Link href={`/dashboard/clients/${client.id}`} className='flex flex-col items-center'>
               <strong>{client.name}</strong>
 
               {client.email && (
