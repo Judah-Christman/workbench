@@ -1,6 +1,6 @@
-import { createClient } from '@/lib/supabase/server';
-import { redirect } from 'next/navigation';
-import TimeCardList from './TimeCard';
+import { createClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
+import TimeCardList from './TimeCard'
 
 export default async function TimeCard() {
   const supabase = await createClient()
@@ -37,11 +37,22 @@ export default async function TimeCard() {
     throw new Error(historyError.message)
   }
 
+  const formattedTimeCards = (timeCards ?? []).map((timeCard) => ({
+    id: timeCard.id,
+    start_time: timeCard.start_time,
+    stop_time: timeCard.stop_time,
+    total_minutes: timeCard.total_minutes,
+    notes: timeCard.notes,
+    client: {
+      name: timeCard.client[0]?.name ?? 'Unknown Client',
+    },
+  }))
+
   return (
     <section className='min-h-screen w-full max-w-300 mx-auto p-6'>
       <TimeCardList
-        timeCards={timeCards ?? []}
+        timeCards={formattedTimeCards}
       />
     </section>
-  );
+  )
 }

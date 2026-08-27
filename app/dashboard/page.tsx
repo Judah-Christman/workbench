@@ -19,7 +19,7 @@ export default async function DashboardPage() {
   const { data: clients, error: clientsError } =
     await supabase
       .from('clients')
-      .select('id, name')
+      .select('id, name, email')
       .eq('active', true)
       .order('name')
 
@@ -75,10 +75,21 @@ export default async function DashboardPage() {
         start_time: runningTimer.start_time,
         notes: runningTimer.notes,
         client: {
-          name: runningTimer.clients.name,
+          name: runningTimer.clients[0]?.name ?? "Unkown Client",
         },
       }
     : null
+
+  const formattedTimeCards = (timeCards ?? []).map((timeCard) => ({
+    id: timeCard.id,
+    start_time: timeCard.start_time,
+    stop_time: timeCard.stop_time,
+    total_minutes: timeCard.total_minutes,
+    notes: timeCard.notes,
+    client: {
+      name: timeCard.client[0]?.name ?? 'Unknown Client',
+    },
+  }))
 
   return (
     <main className='p-5 max-w-300 w-full mx-auto'>
@@ -104,7 +115,7 @@ export default async function DashboardPage() {
         />
 
         <TimeHistory
-          timeCards={timeCards ?? []}
+          timeCards={formattedTimeCards}
         />
       </section>
 
