@@ -5,6 +5,11 @@ import ClientList from './client-list'
 import TimeTracker from './time/time-tracker'
 import TimeHistory from './time/time-history'
 
+type ClientRelation = {
+  name: string
+  user_id: string
+}
+
 export default async function DashboardPage() {
   const supabase = await createClient()
 
@@ -44,6 +49,10 @@ export default async function DashboardPage() {
       .eq('clients.user_id', user.id)
       .maybeSingle()
 
+  if (timerError) {
+    throw new Error(timerError.message)
+  }
+
   const { data: timeCards, error: historyError } =
     await supabase
       .from('time_cards')
@@ -75,21 +84,28 @@ export default async function DashboardPage() {
         start_time: runningTimer.start_time,
         notes: runningTimer.notes,
         client: {
-          name: runningTimer.clients[0]?.name ?? "Unkown Client",
+          name: (
+            runningTimer.clients as unknown as ClientRelation
+          ).name,
         },
       }
     : null
 
-  const formattedTimeCards = (timeCards ?? []).map((timeCard) => ({
-    id: timeCard.id,
-    start_time: timeCard.start_time,
-    stop_time: timeCard.stop_time,
-    total_minutes: timeCard.total_minutes,
-    notes: timeCard.notes,
-    client: {
-      name: timeCard.client[0]?.name ?? 'Unknown Client',
-    },
-  }))
+  const formattedTimeCards = (timeCards ?? []).map((timeCard) => {
+    const client =
+      timeCard.client as unknown as ClientRelation
+
+    return {
+      id: timeCard.id,
+      start_time: timeCard.start_time,
+      stop_time: timeCard.stop_time,
+      total_minutes: timeCard.total_minutes,
+      notes: timeCard.notes,
+      client: {
+        name: client.name,
+      },
+    }
+  })
 
   return (
     <main className='p-5 max-w-300 w-full mx-auto'>
