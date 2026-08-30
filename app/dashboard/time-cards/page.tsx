@@ -2,6 +2,11 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import TimeCardList from './TimeCard'
 
+type ClientRelation = {
+  name: string
+  user_id: string
+}
+
 export default async function TimeCard() {
   const supabase = await createClient()
 
@@ -37,16 +42,21 @@ export default async function TimeCard() {
     throw new Error(historyError.message)
   }
 
-  const formattedTimeCards = (timeCards ?? []).map((timeCard) => ({
-    id: timeCard.id,
-    start_time: timeCard.start_time,
-    stop_time: timeCard.stop_time,
-    total_minutes: timeCard.total_minutes,
-    notes: timeCard.notes,
-    client: {
-      name: timeCard.client[0]?.name ?? 'Unknown Client',
-    },
-  }))
+  const formattedTimeCards = (timeCards ?? []).map((timeCard) => {
+    const client =
+      timeCard.client as unknown as ClientRelation
+
+    return {
+      id: timeCard.id,
+      start_time: timeCard.start_time,
+      stop_time: timeCard.stop_time,
+      total_minutes: timeCard.total_minutes,
+      notes: timeCard.notes,
+      client: {
+        name: client.name,
+      },
+    }
+  })
 
   return (
     <section className='min-h-screen w-full max-w-300 mx-auto p-6'>
