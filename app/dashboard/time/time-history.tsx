@@ -76,7 +76,7 @@ export default function TimeHistory({
 
             <div className="my-2">
               <div className="flex">
-                <p>
+                <p className="mr-2">
                   {formatDate(timeCard.start_time)}
                 </p>
 
