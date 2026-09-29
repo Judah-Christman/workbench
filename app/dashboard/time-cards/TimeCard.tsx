@@ -1,3 +1,5 @@
+"use client";
+
 type TimeCard = {
   id: string
   start_time: string
@@ -14,16 +16,14 @@ type Props = {
 }
 
 function formatTime(dateString: string) {
-  return new Date(dateString).toLocaleTimeString('en-US', {
-    timeZone: 'America/Los_Angeles',
+  return new Date(dateString).toLocaleTimeString([], {
     hour: 'numeric',
     minute: '2-digit',
   })
 }
 
 function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    timeZone: 'America/Los_Angeles',
+  return new Date(dateString).toLocaleDateString([], {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
