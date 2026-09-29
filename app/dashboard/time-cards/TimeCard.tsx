@@ -14,14 +14,16 @@ type Props = {
 }
 
 function formatTime(dateString: string) {
-  return new Date(dateString).toLocaleTimeString([], {
+  return new Date(dateString).toLocaleTimeString('en-US', {
+    timeZone: 'America/Los_Angeles',
     hour: 'numeric',
     minute: '2-digit',
   })
 }
 
 function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString([], {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    timeZone: 'America/Los_Angeles',
     month: 'short',
     day: 'numeric',
     year: 'numeric',
